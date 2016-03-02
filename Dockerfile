@@ -9,6 +9,7 @@ RUN apk --update add bash git python py-pip nano man drill nmap
 RUN pip install --upgrade pip
 RUN pip install dnspython
 
+RUN mkdir /opt
 RUN cd /opt &&\
   git clone https://github.com/pbutlerm/dnschecker &&\
   cd /opt/dnschecker/
@@ -16,3 +17,5 @@ RUN cd /opt &&\
 # Set the default directory
 WORKDIR /opt/dnschecker/
 
+# Display Phython version
+CMD python --version
