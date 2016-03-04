@@ -35,33 +35,34 @@ node_list = []
 # Functions
 
 def execute_forward_dns(node_list):
-    """
-    Executes the forward DNS checks
-    :return: nothing
-    """
-    print(" ")
-    print("Starting Forward DNS Check:")
-    print(" ")
+  """
+  Performs a forward DNS validation for the supplied list of nodes
+  :param node_list: List of Nodes
+  :return: nothing
+  """
+  print(" ")
+  print("Starting Forward DNS Check:")
+  print(" ")
 
-    for node in node_list:
+  for node in node_list:
 
-        #node.print_node()
+      #node.print_node()
 
-        try:
-            ip_check = dns.resolver.query(node.node_fqdn, 'A')
-            # dns_record = dns.resolver.query("google.com", 'A')
-            for ip in ip_check:
-                if ip == node.ip_address:
-                    print "Success!: {0}\t{1}\t\t{2}\t IPs did match. Resolved IP: {4}.".format(node.node_number, node.node_fqdn, node.node_ip, ip)
-                else:
-                    print "Error: {0}\t{1}\t\t{2}\t IPs Did not match. Resolved IP: {4}.".format(node.node_number, node.node_fqdn, node.node_ip, ip)
+      try:
+          ip_check = dns.resolver.query(node.node_fqdn, 'A')
+          # dns_record = dns.resolver.query("google.com", 'A')
+          for ip in ip_check:
+              if ip == node.ip_address:
+                  print "Success!: {0}\t{1}\t\t{2}\t IPs did match. Resolved IP: {4}.".format(node.node_number, node.node_fqdn, node.node_ip, ip)
+              else:
+                  print "Error: {0}\t{1}\t\t{2}\t IPs Did not match. Resolved IP: {4}.".format(node.node_number, node.node_fqdn, node.node_ip, ip)
 
-        except dns.resolver.NXDOMAIN:
-            print "Error: {0}\t{1}\t\t{2}\t Could not find the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
-        except dns.resolver.Timeout:
-            print "Error: {0}\t{1}\t\t{2}\t The Request has Timeout for the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
-        except dns.resolver.NoAnswer:
-            print "Error: {0}\t{1}\t\t{2}\t Could not find any A records for the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
+      except dns.resolver.NXDOMAIN:
+          print "Error: {0}\t{1}\t\t{2}\t Could not find the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
+      except dns.resolver.Timeout:
+          print "Error: {0}\t{1}\t\t{2}\t The Request has Timeout for the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
+      except dns.resolver.NoAnswer:
+          print "Error: {0}\t{1}\t\t{2}\t Could not find any A records for the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
 
 
 def create_node_information(ip, number_nodes, color, domain):
@@ -71,7 +72,7 @@ def create_node_information(ip, number_nodes, color, domain):
     :param number_nodes: Number of Nodes
     :param color: Rack Color
     :param domain: Domain
-    :return: nothing
+    :return: List of Nodes
     """
 
     mynode_list = []
@@ -95,7 +96,6 @@ def create_node_information(ip, number_nodes, color, domain):
 
     return mynode_list
 
-    # logger.info("Nodes in list: {}".format(len(node_list)))
 
 
 def calculate_ip(ip, node_number):
@@ -126,8 +126,8 @@ def calculate_prt(new_ip):
 
 def execute_backward_dns(node_list):
     """
-    Executes the backward DNS Checks
-    :param node_list:
+    Performs a backward DNS validation for the list of Nodes
+    :param node_list: List of nodes
     :return:
     """
 
