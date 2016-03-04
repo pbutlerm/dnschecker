@@ -51,24 +51,17 @@ def execute_forward_dns(node_list):
             ip_check = dns.resolver.query(node.node_fqdn, 'A')
             # dns_record = dns.resolver.query("google.com", 'A')
             for ip in ip_check:
-                print("Node:{0} Resolved IP: {1} | Required IP: {2}".format(node.node_fqdn, ip, node.ip_address))
                 if ip == node.ip_address:
-                    print "IP address match"
+                    print "Success!: {0}\t{1}\t\t{2}\t IPs did match. Resolved IP: {4}.".format(node.node_number, node.node_fqdn, node.node_ip, ip)
                 else:
-                    print "IP address does not match"
+                    print "Error: {0}\t{1}\t\t{2}\t IPs Did not match. Resolved IP: {4}.".format(node.node_number, node.node_fqdn, node.node_ip, ip)
 
         except dns.resolver.NXDOMAIN:
-            print "Error: {0}\t{1}   \t{2}\t Could not find the domain".format(node.node_number, node.node_fqdn, node.node_ip)
-            #print "Error: Could not find the domain for {0}".format(node.node_fqdn)
-            #return
+            print "Error: {0}\t{1}\t\t{2}\t Could not find the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
         except dns.resolver.Timeout:
-            print "Error: The Request has Timeout for the domain for {0}".format(node.node_fqdn)
-            #return
+            print "Error: {0}\t{1}\t\t{2}\t The Request has Timeout for the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
         except dns.resolver.NoAnswer:
-            print "Error: Could not find any A records for the domain for {0}".format(node.node_fqdn)
-            #return
-
-    print("Execute forward DNS.")
+            print "Error: {0}\t{1}\t\t{2}\t Could not find any A records for the domain.".format(node.node_number, node.node_fqdn, node.node_ip)
 
 
 def create_node_information(ip, number_nodes, color, domain):
@@ -138,7 +131,9 @@ def execute_backward_dns(node_list):
     :return:
     """
 
-    print("Execute reverse DNS.")
+    print(" ")
+    print("Starting Reverse DNS Check:")
+    print(" ")
 
     n = dns.reversename.from_address("127.0.0.1")
     print n
