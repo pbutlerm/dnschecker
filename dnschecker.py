@@ -34,7 +34,7 @@ node_list = []
 
 # Functions
 
-def execute_forward_dns():
+def execute_forward_dns(node_list):
     """
     Executes the forward DNS checks
     :return: nothing
@@ -44,24 +44,29 @@ def execute_forward_dns():
     print(" ")
 
     for node in node_list:
-        logger.info("Node: {}".format(node.print_node()))
+
+        #node.print_node()
 
         try:
             ip_check = dns.resolver.query(node.node_fqdn, 'A')
             # dns_record = dns.resolver.query("google.com", 'A')
             for ip in ip_check:
-                logger.info("Node:{0} Resolved IP: {1} | Required IP: {2}".format(node.node_fqdn, ip, node.ip_address))
+                print("Node:{0} Resolved IP: {1} | Required IP: {2}".format(node.node_fqdn, ip, node.ip_address))
                 if ip == node.ip_address:
                     print "IP address match"
                 else:
                     print "IP address does not match"
 
         except dns.resolver.NXDOMAIN:
-            print 'Error: NXDOMAIN'
+            print "Error: {0}\t{1}   \t{2}\t Could not find the domain".format(node.node_number, node.node_fqdn, node.node_ip)
+            #print "Error: Could not find the domain for {0}".format(node.node_fqdn)
+            #return
         except dns.resolver.Timeout:
-            print 'Error: Timeout'
+            print "Error: The Request has Timeout for the domain for {0}".format(node.node_fqdn)
+            #return
         except dns.resolver.NoAnswer:
-            print 'Error: No Answer'
+            print "Error: Could not find any A records for the domain for {0}".format(node.node_fqdn)
+            #return
 
     print("Execute forward DNS.")
 
@@ -75,6 +80,9 @@ def create_node_information(ip, number_nodes, color, domain):
     :param domain: Domain
     :return: nothing
     """
+
+    mynode_list = []
+
     print("List of Nodes:")
     print(" ")
     print("{0}\t{1}\t\t{2}\t\t\t{3}\t{4}".format("Number", "Name", "FQDN", "IP Address", "PTR"))
@@ -89,8 +97,12 @@ def create_node_information(ip, number_nodes, color, domain):
         node = Racknode(node_number, node_name, node_fqdn, new_ip, node_prt)
         node.print_node()
         # Adding Nodes to the Node List
-        node_list.append(node)
-    logger.info("Nodes in list: {}".format(len(node_list)))
+        mynode_list.append(node)
+        #print("Node List Count {1}".format(mynode_list.__len__()))
+
+    return mynode_list
+
+    # logger.info("Nodes in list: {}".format(len(node_list)))
 
 
 def calculate_ip(ip, node_number):
@@ -119,22 +131,18 @@ def calculate_prt(new_ip):
     return node_prt
 
 
-def execute_backward_dns(ip, number_nodes, color):
+def execute_backward_dns(node_list):
+    """
+    Executes the backward DNS Checks
+    :param node_list:
+    :return:
+    """
+
     print("Execute reverse DNS.")
 
     n = dns.reversename.from_address("127.0.0.1")
     print n
     print dns.reversename.to_address(n)
-
-
-def populate_node_dns_list(ip, number_nodes, color, domain):
-    """
-    Populates the node list with the proper DNS Entries
-    :param ip: Starting IP address
-    :param number_nodes: Number of Nodes
-    :param color: Rack Color
-    :return: nothing
-    """
 
 
 def valid_ip(address):
@@ -148,6 +156,21 @@ def valid_ip(address):
         return True
     except:
         return False
+
+
+def print_banner():
+    """
+    Prints the Application's banner
+    :return: application banner accsi
+    """
+    print("                                                          ")
+    print("    ____  _   _______ ________              __            ")
+    print("   / __ \/ | / / ___// ____/ /_  ___  _____/ /_____  _____")
+    print("  / / / /  |/ /\__ \/ /   / __ \/ _ \/ ___/ //_/ _ \/ ___/")
+    print(" / /_/ / /|  /___/ / /___/ / / /  __/ /__/ ,< /  __/ /    ")
+    print("/_____/_/ |_//____/\____/_/ /_/\___/\___/_/|_|\___/_/     ")
+    print("                                                      v1.0")
+
 
 
 def main():
@@ -164,6 +187,8 @@ def main():
     parser.set_defaults(color="green")
     args = parser.parse_args()
 
+
+
     # Parameter Validation ------------------------------------------------------------
 
     # Check for Valid IP Addresses
@@ -173,23 +198,28 @@ def main():
             sys.exit(2)
 
     # Execution Steps  ----------------------------------------------------------------
-    logger.info("Starting DNS Checks:")
+
+    print_banner()
+
+    print("Starting DNS Checks:")
 
     ip = args.ip[0]
     number_nodes = int(args.nodes[0])
     color = args.color[0]
     domain = args.domain[0]
 
-    logger.info("Starting IP Address:{}".format(ip))
-    logger.info("Number of Nodes: IP Address:{}".format(number_nodes))
-    logger.info("Rack Color:{}".format(color))
-    logger.info("Domain Name::{}".format(domain))
+    print("Starting IP Address:{}".format(ip))
+    print("Number of Nodes: IP Address:{}".format(number_nodes))
+    print("Rack Color:{}".format(color))
+    print("Domain Name::{}".format(domain))
+    print(" ")
 
-    create_node_information(ip, number_nodes, color, domain)
-    execute_forward_dns()
-    # execute_backward_dns(ip, number_nodes, color, domain)
+    node_list = create_node_information(ip, number_nodes, color, domain)
+    #print("Node List Count {1}".format(node_list.__len__()))
 
-    logger.info("DNS Checks Completed.")
+    execute_forward_dns(node_list)
+
+    execute_backward_dns(node_list)
 
 
 # Inner Classes
@@ -215,8 +245,14 @@ class Racknode():
         """ Prints the Node Information
         :return: nothing
         """
+
         print(
             "{0}\t{1}\t\t{2}\t{3}\t{4}".format(self.node_number, self.node_name, self.node_fqdn, self.node_ip, self.node_prt))
+
+
+
+
+
 
 
 
