@@ -113,15 +113,15 @@ def calculate_ip(ip, node_number):
     return new_ip
 
 
-def calculate_prt(new_ip):
+def calculate_ptr(new_ip):
     """
     Calculates the node PRT
     :param new_ip: IP address
     :return: returns the PRT based on the IP address
     """
     octets = new_ip.split(".")
-    node_prt = "{0}.{1}.{2}.{3}.in-addr.arpa".format(octets[3], octets[2], octets[1], octets[0])
-    return node_prt
+    node_ptr = "{0}.{1}.{2}.{3}.in-addr.arpa".format(octets[3], octets[2], octets[1], octets[0])
+    return node_ptr
 
 
 def execute_backward_dns(node_list):
@@ -221,28 +221,28 @@ def main():
 class Racknode():
     """Node object"""
 
-    def __init__(self, node_number, node_name, fqdn, ip_address, prt):
+    def __init__(self, node_number, node_name, fqdn, ip_address, ptr):
         """ Initialize node attributes
         :param node_number: Node's number
         :param node_name: Node's name
         :param fqdn: Node's fully qualified domain name
         :param ip_address: Node's IP address
-        :param prt: Node's PRT
+        :param ptr: Node's PTR
         :return: nothing
         """
         self.node_number = node_number
         self.node_name = node_name
         self.node_fqdn = fqdn
         self.node_ip = ip_address
-        self.node_prt = prt
+        self.node_ptr = ptr
 
     def print_node(self):
         """ Prints the Node Information
         :return: nothing
         """
-
+        
         print(
-            "{0}\t{1}\t\t{2}\t{3}\t{4}".format(self.node_number, self.node_name, self.node_fqdn, self.node_ip, self.node_prt))
+            "{0}\t{1}\t\t{2}\t{3}\t{4}".format(self.node_number, self.node_name, self.node_fqdn, self.node_ip, self.node_ptr))
 
 
 
